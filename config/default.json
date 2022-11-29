@@ -1,0 +1,26 @@
+{
+  "Proto": {
+    "base_dir": "protos"
+  },
+  "Logger": {
+    "level": "debug"
+  },
+  "MetadataService": {
+    "name": "MetaDataService",
+    "protobuf_pkg": "metadata",
+    "protobuf_file": "metadata_service.proto",
+    "hostConfig" : {
+      "host": "0.0.0.0",
+      "port": 9000
+    }
+  },
+  "NodeService": {
+    "name": "NodeService",
+    "protobuf_pkg": "node",
+    "protobuf_file": "node_service.proto",
+    "hostConfig" : {
+      "host": "0.0.0.0",
+      "port": 9001
+    }
+  }
+}

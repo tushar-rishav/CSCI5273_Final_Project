@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package node;
+
+service NodeService {
+    rpc JoinParent(JoinParentRequest) returns (JoinParentResponse);
+}
+
+message JoinParentRequest {};
+message  JoinParentResponse {};
