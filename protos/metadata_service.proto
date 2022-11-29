@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package metadata;
+
+service MetadataService {
+    rpc DiscoverParent(DiscoverParentRequest) returns (DiscoverParentResponse);
+}
+
+message DiscoverParentRequest {}
+
+message DiscoverParentResponse {
+    Node parent = 1;
+}
+
+message Node {
+    Host host = 1;
+}
+
+message Host {
+    string hostname = 1;
+}

@@ -1,0 +1,29 @@
+{
+  "name": "distree",
+  "version": "1.0.0",
+  "description": "Distributed Spanning Tree",
+  "main": "main.js",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.7.3",
+    "@grpc/proto-loader": "^0.7.3",
+    "config": "^3.3.8",
+    "log4js": "^6.7.1",
+    "minimist": "^1.2.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start-mds": "node src/metadata_server.js",
+    "start-ns": "node src/node_server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tushar-rishav/CSCI5273_Final_Project.git"
+  },
+  "author": "Tushar Gautam",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tushar-rishav/CSCI5273_Final_Project/issues"
+  },
+  "homepage": "https://github.com/tushar-rishav/CSCI5273_Final_Project#readme"
+}
