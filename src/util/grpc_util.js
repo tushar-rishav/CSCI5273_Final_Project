@@ -22,11 +22,15 @@ function protoLoader (proto_file) {
     return proto_descriptor
 }
 
-function getServer(proto_service, route_map) {
+function getServer(host, port, proto_service, route_map, callback) {
     let server = new grpc.Server();
-    server.addService(proto_service.service, route_map);
     
-    return server;
+    server.addService(proto_service.service, route_map);
+    server.bindAsync(`${host}:${port}`,
+                        grpc.ServerCredentials.createInsecure(), (err, resp) => {
+                        server.start();
+                        setTimeout(callback, 0, err, resp)
+                    });
 }
 
 function getClient(proto_service, service_name) {
