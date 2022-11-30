@@ -3,19 +3,39 @@ syntax = "proto3";
 package metadata;
 
 service MetadataService {
-    rpc DiscoverParent(DiscoverParentRequest) returns (DiscoverParentResponse);
+    rpc JoinCluster(JoinClusterRequest) returns (JoinClusterResponse);
+    rpc PublishWhereabouts(WhereaboutsRequest) returns (WhereaboutsResponse);
 }
 
-message DiscoverParentRequest {}
+message WhereaboutsRequest {
+    string node_uuid = 1;       // node's unique uuid
+    string parent_uuid = 2;     // parent node
+    int32 depth = 3;            // tree depth
+    int32 children_count = 4;   // current children count
+}
 
-message DiscoverParentResponse {
-    Node parent = 1;
+message WhereaboutsResponse {
+    int32 status = 1;           // HTTP return code 2xx, 4xx etc
+    optional string message = 2;
+}
+
+message JoinClusterRequest {
+    optional string node_uuid = 1; // if existing node rejoins the cluster   
+}
+
+message JoinClusterResponse {
+    int32 status = 1;
+    optional string message = 2; 
+    optional Node parent = 3;
 }
 
 message Node {
-    Host host = 1;
+    string id = 1;
+    Host host = 2;
 }
 
 message Host {
-    string hostname = 1;
+    string ipaddr = 1;
+    int32 port = 2;
+    optional string hostname = 3;
 }
