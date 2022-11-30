@@ -10,7 +10,7 @@
     "protobuf_pkg": "metadata",
     "protobuf_file": "metadata_service.proto",
     "hostConfig" : {
-      "host": "0.0.0.0",
+      "host": "mds",
       "port": 9000
     }
   },

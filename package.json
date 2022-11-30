@@ -13,7 +13,7 @@
   "devDependencies": {},
   "scripts": {
     "start-mds": "node src/metadata_server.js",
-    "start-ns": "node src/node_server.js",
+    "start-tns": "node src/node_server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
