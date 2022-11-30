@@ -3,14 +3,14 @@
 const grpc                      = require('@grpc/grpc-js');
 const assert                    = require('assert');
 const config                    = require('config'); 
+const logger                    = require('./util/logger').getLogger('NODE_SERVER');
 
-const {getServer, getClient, protoLoader, getLogger}  = require('./util/grpc_util');
+const {getServer, getClient, protoLoader }  = require('./util/grpc_util');
 
 const CONFIG_ROOT = 'NodeService'
 
 var host      = config.get(`${CONFIG_ROOT}.hostConfig.host`);
 var port      = config.get(`${CONFIG_ROOT}.hostConfig.port`);
-var logger    = getLogger(config.get(`${CONFIG_ROOT}.name`));
 
 var proto_descriptor    = protoLoader(config.get(`${CONFIG_ROOT}.protobuf_file`));
 var proto_service       = proto_descriptor.node.NodeService;
@@ -40,7 +40,7 @@ function startServer() {
     getServer(host, port, proto_service, route_map, (err, resp) => {
         assert.ifError(err);
 
-        metadata_client.JoinCluster({}, {}, (_err, _resp) => {
+        metadata_client.JoinCluster({ capacity: 2 }, (_err, _resp) => {
             assert.ifError(_err);
             logger.debug(_resp);
         });

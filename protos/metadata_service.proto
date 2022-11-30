@@ -20,7 +20,7 @@ message WhereaboutsResponse {
 }
 
 message JoinClusterRequest {
-    optional string node_uuid = 1; // if existing node rejoins the cluster   
+    int32 capacity = 1;
 }
 
 message JoinClusterResponse {
@@ -35,7 +35,5 @@ message Node {
 }
 
 message Host {
-    string ipaddr = 1;
-    int32 port = 2;
-    optional string hostname = 3;
+    string endpoint_uri = 1;
 }
