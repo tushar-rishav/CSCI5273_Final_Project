@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  node:
+    build: .
+    image: server
+    #restart: unless-stopped
+    depends_on:
+      - db
+      - mds
+    command: ["start-tns"]
+    expose:
+      - "9001"
+    volumes:
+      - "./:/app"
+  mds:
+    build: .
+    image: server
+    restart: unless-stopped
+    depends_on:
+      - db
+    command: ["start-mds"]
+    expose:
+      - "9000"
+    volumes:
+      - "./:/app"
+  db:
+    image: mongo:latest
+    restart: unless-stopped
+    ports:
+      - "27017"
+    env_file:
+      - credentials.env
+    volumes:
+      - mds_data:/data/db
+  mongo-express:
+    image: mongo-express
+    #restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8081:8081"
+    env_file:
+      - credentials.env
+
+volumes:
+  mds_data:
