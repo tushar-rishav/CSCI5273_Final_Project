@@ -8,8 +8,8 @@ service MetadataService {
 }
 
 message WhereaboutsRequest {
-    string node_uuid = 1;       // node's unique uuid
-    string parent_uuid = 2;     // parent node
+    string node_id = 1;       // node's unique uuid
+    string parent_id = 2;     // parent node
     int32 depth = 3;            // tree depth
     int32 children_count = 4;   // current children count
 }
@@ -21,19 +21,18 @@ message WhereaboutsResponse {
 
 message JoinClusterRequest {
     int32 capacity = 1;
+    optional string node_id = 2; // existing nodes post node/parent failure recovery
 }
 
 message JoinClusterResponse {
     int32 status = 1;
-    optional string message = 2; 
-    optional Node parent = 3;
+    string node_id = 2;
+    Node parent = 3;
+    int32 depth = 4;
+    optional string message = 5; 
 }
 
 message Node {
-    string id = 1;
-    Host host = 2;
-}
-
-message Host {
-    string endpoint_uri = 1;
+    string node_id = 1;
+    string endpoint_uri = 2;
 }
