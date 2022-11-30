@@ -4,7 +4,7 @@ services:
   node:
     build: .
     image: server
-    #restart: unless-stopped
+    restart: unless-stopped
     depends_on:
       - db
       - mds
@@ -24,6 +24,8 @@ services:
       - "9000"
     volumes:
       - "./:/app"
+    env_file:
+      - credentials.env
   db:
     image: mongo:latest
     restart: unless-stopped
@@ -35,7 +37,7 @@ services:
       - mds_data:/data/db
   mongo-express:
     image: mongo-express
-    #restart: unless-stopped
+    restart: unless-stopped
     depends_on:
       - db
     ports:

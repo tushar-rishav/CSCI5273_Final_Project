@@ -2,7 +2,6 @@ const grpc          = require('@grpc/grpc-js');
 const path          = require('path');
 const proto_loader  = require('@grpc/proto-loader');
 const config        = require('config');
-const log4js        = require('log4js');
 
 function protoLoader (proto_file) {
     let proto_path = path.join(process.cwd(), config.get('Proto.base_dir'), proto_file);
@@ -40,16 +39,8 @@ function getClient(proto_service, service_name) {
     return new proto_service(`${host}:${port}`, grpc.credentials.createInsecure());
 }
 
-function getLogger(category="log4js") {
-    var logger = log4js.getLogger(category);
-    logger.level = config.get('Logger.level');
-
-    return logger;
-}
-
 
 module.exports = {
-    getLogger: getLogger,
     getServer: getServer,
     getClient: getClient,
     protoLoader: protoLoader

@@ -8,9 +8,9 @@
     "@grpc/proto-loader": "^0.7.3",
     "config": "^3.3.8",
     "log4js": "^6.7.1",
-    "minimist": "^1.2.7"
+    "mongodb": "^4.12.1",
+    "uuid": "^9.0.0"
   },
-  "devDependencies": {},
   "scripts": {
     "start-mds": "node src/metadata_server.js",
     "start-tns": "node src/node_server.js",
