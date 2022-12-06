@@ -22,8 +22,9 @@
       "host": "0.0.0.0",
       "port": 9001
     },
-    "heartbeat_period": 3000,
+    "heartbeat_period": 10000,
     "node_state_cache": "/tmp/node_state.cache",
-    "capacity": 2
+    "capacity": 2,
+    "child_retry": 3
   }
 }

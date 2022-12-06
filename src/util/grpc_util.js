@@ -2,6 +2,7 @@ const grpc          = require('@grpc/grpc-js');
 const path          = require('path');
 const proto_loader  = require('@grpc/proto-loader');
 const config        = require('config');
+const logger        = require('./extra').getLogger("GRPC_UTIL");
 
 function get_proto_descriptor (proto_file) {
     let proto_path = path.join(process.cwd(), config.get('Proto.base_dir'), proto_file);
@@ -32,11 +33,9 @@ function get_rpc_server(host, port, proto_service, route_map, callback) {
                     });
 }
 
-function get_rpc_client(proto_service, service_name) {
-    let host = config.get(`${service_name}.hostConfig.host`);
-    let port = config.get(`${service_name}.hostConfig.port`);
-
-    return new proto_service(`${host}:${port}`, grpc.credentials.createInsecure());
+function get_rpc_client(proto_service, endpoint_uri) {
+    logger.debug("Received rpc_client create request for target", endpoint_uri);
+    return new proto_service(endpoint_uri, grpc.credentials.createInsecure());
 }
 
 
