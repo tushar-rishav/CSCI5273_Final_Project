@@ -9,6 +9,7 @@
     "config": "^3.3.8",
     "log4js": "^6.7.1",
     "mongodb": "^4.12.1",
+    "node-cache": "^5.1.2",
     "uuid": "^9.0.0"
   },
   "scripts": {

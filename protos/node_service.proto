@@ -4,7 +4,31 @@ package node;
 
 service NodeService {
     rpc JoinParent(JoinParentRequest) returns (JoinParentResponse);
+    rpc GetSiblingsAndUncles(SiblingsAndUnclesRequest) returns (SiblingsAndUncles);
 }
 
-message JoinParentRequest {};
-message  JoinParentResponse {};
+message SiblingsAndUnclesRequest{
+    string node_id = 1;
+}
+
+message SiblingsAndUncles {
+    repeated Node siblings = 1;
+    repeated Node uncles = 2;
+};
+
+message JoinParentRequest {
+    Node child = 1;
+};
+
+message  JoinParentResponse {
+    int32 status = 1;
+    string message = 2;
+    SiblingsAndUncles siblings_and_uncles = 3; 
+
+};
+
+// FIXME: import from metadata_service.proto?
+message Node {
+    string node_id = 1;
+    optional string endpoint_uri = 2;
+}
