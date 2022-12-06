@@ -3,7 +3,7 @@
 const grpc                      = require('@grpc/grpc-js');
 const assert                    = require('assert');
 const config                    = require('config');
-const logger                    = require('./util/logger').getLogger('MDS_SERVER');
+const logger                    = require('./util/extra').getLogger('MDS_SERVER');
 const { v4: uuidv4 }            = require('uuid');
 const { get_rpc_server, get_proto_descriptor }              = require('./util/grpc_util');
 const { db_read, db_insert, db_update, db_remove }  = require('./util/db_util');

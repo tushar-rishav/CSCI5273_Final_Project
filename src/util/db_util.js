@@ -1,7 +1,7 @@
 'use strict';
 
 const { MongoClient, ObjectId }  = require('mongodb');
-const logger = require('./logger').getLogger('DB_UTIL');
+const logger = require('./extra').getLogger('DB_UTIL');
 
 const COLLECTION = "metadata";
 var URL = process.env.ME_CONFIG_MONGODB_URL;
