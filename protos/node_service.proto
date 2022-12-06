@@ -14,6 +14,7 @@ message SiblingsAndUnclesRequest{
 message SiblingsAndUncles {
     repeated Node siblings = 1;
     repeated Node uncles = 2;
+    Node grand_parent = 3;
 };
 
 message JoinParentRequest {

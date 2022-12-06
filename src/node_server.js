@@ -1,22 +1,18 @@
 'use strict';
 
-const {readFile, writeFile} = require('node:fs/promises');
+const {readFile, writeFile}     = require('node:fs/promises');
 const grpc                      = require('@grpc/grpc-js');
 const assert                    = require('assert');
 const config                    = require('config'); 
-const NodeCache                 = require( "node-cache" );
+const NodeCache                 = require('node-cache');
 const {getLogger, deferPromise} = require('./util/extra');
-
-var logger = getLogger('NODE_SERVER');
-
-
 const {get_rpc_server, get_rpc_client, get_proto_descriptor }  = require('./util/grpc_util');
 
 const CONFIG_ROOT = 'NodeService'
 
+var logger    = getLogger('NODE_SERVER');
 var host      = config.get(`${CONFIG_ROOT}.hostConfig.host`);
 var port      = config.get(`${CONFIG_ROOT}.hostConfig.port`);
-
 var mds_host  = config.get(`MetadataService.hostConfig.host`);
 var mds_port  = config.get(`MetadataService.hostConfig.port`);
 
@@ -33,6 +29,8 @@ class NodeState {
         this.depth = depth;
         this.parent_endpoint = parent_endpoint || "";
         this.parent_id = parent_id || "";
+        this.grand_parent = "";
+        this.grand_parent_endpoint = "";
 
         // The children and siblings to be populated from peer discovery
         // Cache stored as node_id -> Node(node_id, endpoint_uri)
@@ -73,17 +71,18 @@ class NodeState {
         });
     }
 
-    update_uncles_and_siblings (siblings_and_uncles) {
+    update_uncles_and_siblings (resp) {
         var self = this;
         self.siblings = new NodeCache();
         self.uncles = new NodeCache();
-        siblings_and_uncles.siblings.forEach((node) => {
+        resp.siblings.forEach((node) => {
             self.siblings.set(node.node_id, node);
         });
-
-        siblings_and_uncles.uncles.forEach((node) => {
+        resp.uncles.forEach((node) => {
             self.uncles.set(node.node_id, node);
         });
+        self.grand_parent = resp.grand_parent.node_id;
+        self.grand_parent_endpoint = resp.grand_parent.endpoint_uri;
     }
 
     static parent_rpc_client;
@@ -115,13 +114,13 @@ class NodeState {
                 logger.info("Join parent successful", NodeState.#node_state.parent_id, resp);
 
                 self.update_uncles_and_siblings(resp.siblings_and_uncles);
-                setInterval(self.get_siblings_and_uncles.bind(self),
+                setInterval(self.get_siblings_and_uncles_and_gp.bind(self),
                             config.get(`${CONFIG_ROOT}.heartbeat_period`));
                 
         });
     }
 
-    get_siblings_and_uncles() {
+    get_siblings_and_uncles_and_gp() {
         var self = this;
         
         // check if node itself is the root
@@ -132,7 +131,7 @@ class NodeState {
         NodeState.parent_rpc_client.GetSiblingsAndUncles({ node_id: NodeState.#node_state.node_id },
             (err, resp) => {
                 assert.ifError(err);
-                logger.info("Fetched recent siblings and uncles for node_id: ", NodeState.#node_state.node_id, resp);
+                logger.info("Fetched recent siblings, uncles and gp for node_id: ", NodeState.#node_state.node_id, resp);
 
                 self.update_uncles_and_siblings(resp);
         });
@@ -193,7 +192,10 @@ function rpc_add_child_node(call, callback) {
             logger.info("Children list:", node_state.children.keys());
             var response = { status: 200,
                              message: 'SUCCESS',
-                             siblings_and_uncles: { siblings: [], uncles: [] } 
+                             siblings_and_uncles: { siblings: [],
+                                                    uncles: [],
+                                                    grand_parent: { node_id: node_state.parent_id,
+                                                                    endpoint_uri: node_state.parent_endpoint } }
                             };
 
             node_state.set_siblings_uncles_response(response.siblings_and_uncles, new_child.node_id);
@@ -206,9 +208,11 @@ function rpc_add_child_node(call, callback) {
     }
 }
 
-function rpc_get_siblings_uncles(call, callback) {
+function rpc_get_siblings_uncles_gp(call, callback) {
     var node_state = NodeState.get_node_state();
-    var response = { siblings: [], uncles: [] };
+    var response = { siblings: [], uncles: [], grand_parent: { node_id: node_state.parent_id,
+                                                               endpoint_uri: node_state.parent_endpoint }
+                    };
     var child_node_id = call.request.node_id;
 
     node_state.set_siblings_uncles_response(response, child_node_id);
@@ -218,7 +222,7 @@ function rpc_get_siblings_uncles(call, callback) {
 (function() {
     var route_map = {
         JoinParent: rpc_add_child_node,
-        GetSiblingsAndUncles: rpc_get_siblings_uncles
+        GetSiblingsAndUncles: rpc_get_siblings_uncles_gp
     }
 
     get_rpc_server(host, port, proto_service, route_map, (err, resp) => {
