@@ -61,5 +61,6 @@ $ docker-compose up --scale node=0 --scale mds=1 -d # starts MDS
 $ docker-compose up --no-recreate --scale node=10 --scale mds=1 -d # starts a cluster of 10 tree node servers as per tree topology.
 ```
 
-## Presentation Slides
-[Slides](doc/PPT.pdf)
+## Presentation Slides and Video
+- [Slides](doc/PPT.pdf)
+- [YouTube](https://www.youtube.com/watch?v=tZjVTBsGzvQ)
